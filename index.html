@@ -3,9 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pipeline Leakage Detector</title>
+    <title>Sistem Deteksi Kebocoran Pipa Gas</title>
     <style>
       body {
+        width: 100vw;
+        overflow: hidden;
         font-family: Arial, sans-serif;
         margin: 20px;
         padding: 0;
@@ -63,6 +65,13 @@
         text-align: center;
         color: #2e7d32;
       }
+      footer {
+        position: absolute;
+        bottom: 0;
+        text-align: center;
+        width: 100vw;
+        padding-bottom: 10px;
+      }
     </style>
   </head>
   <body>
@@ -98,11 +107,11 @@
         required
       />
 
-      <button type="submit">Check Leakage</button>
+      <button type="submit">Deteksi Kebocoran</button>
     </form>
 
     <div class="output" id="result"></div>
-
+    <footer>made by <a href="https://idpan.netlify.app/">idpan.</a></footer>
     <script>
       document
         .getElementById("leakageForm")
