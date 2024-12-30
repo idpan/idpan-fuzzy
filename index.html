@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pipeline Leakage Detector</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 0;
+        background-color: #f4f4f9;
+        color: #333;
+      }
+      h1 {
+        text-align: center;
+        color: #4caf50;
+      }
+      form {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0 15px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      .output {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 15px;
+        background: #e8f5e9;
+        border: 1px solid #c8e6c9;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+        color: #2e7d32;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Sistem Deteksi Kebocoran Pipa</h1>
+    <form id="leakageForm">
+      <label for="pressure">Perubahan Tekanan (0-100):</label>
+      <input
+        type="number"
+        id="pressure"
+        name="pressure"
+        min="0"
+        max="100"
+        required
+      />
+
+      <label for="flowRate">Perubahan Laju Aliran (0-100):</label>
+      <input
+        type="number"
+        id="flowRate"
+        name="flowRate"
+        min="0"
+        max="100"
+        required
+      />
+
+      <label for="temperature">Perubahan Suhu (0-80):</label>
+      <input
+        type="number"
+        id="temperature"
+        name="temperature"
+        min="0"
+        max="80"
+        required
+      />
+
+      <button type="submit">Check Leakage</button>
+    </form>
+
+    <div class="output" id="result"></div>
+
+    <script>
+      document
+        .getElementById("leakageForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const pressure = parseFloat(
+            document.getElementById("pressure").value
+          );
+          const flowRate = parseFloat(
+            document.getElementById("flowRate").value
+          );
+          const temperature = parseFloat(
+            document.getElementById("temperature").value
+          );
+
+          let pressureLevel = "";
+          let flowRateLevel = "";
+          let temperatureLevel = "";
+
+          if (pressure <= 10) pressureLevel = "Kecil";
+          else if (pressure <= 30) pressureLevel = "Sedang";
+          else pressureLevel = "Besar";
+
+          if (flowRate <= 25) flowRateLevel = "Kecil";
+          else if (flowRate <= 50) flowRateLevel = "Sedang";
+          else flowRateLevel = "Besar";
+
+          if (temperature <= 10) temperatureLevel = "Kecil";
+          else if (temperature <= 25) temperatureLevel = "Sedang";
+          else temperatureLevel = "Besar";
+
+          let leakage = "";
+          let percentage = 0;
+
+          if (
+            pressureLevel === "Kecil" &&
+            flowRateLevel === "Kecil" &&
+            temperatureLevel === "Kecil"
+          ) {
+            leakage = "Kecil";
+            percentage = 5;
+          } else if (
+            pressureLevel === "Kecil" &&
+            flowRateLevel === "Kecil" &&
+            temperatureLevel === "Sedang"
+          ) {
+            leakage = "Kecil";
+            percentage = 10;
+          } else if (
+            pressureLevel === "Kecil" &&
+            flowRateLevel === "Kecil" &&
+            temperatureLevel === "Besar"
+          ) {
+            leakage = "Kecil";
+            percentage = 15;
+          } else if (
+            pressureLevel === "Kecil" &&
+            flowRateLevel === "Sedang" &&
+            temperatureLevel === "Kecil"
+          ) {
+            leakage = "Kecil";
+            percentage = 10;
+          } else if (
+            pressureLevel === "Kecil" &&
+            flowRateLevel === "Sedang" &&
+            temperatureLevel === "Sedang"
+          ) {
+            leakage = "Kecil";
+            percentage = 15;
+          } else if (
+            pressureLevel === "Kecil" &&
+            flowRateLevel === "Sedang" &&
+            temperatureLevel === "Besar"
+          ) {
+            leakage = "Kecil";
+            percentage = 20;
+          } else if (
+            pressureLevel === "Kecil" &&
+            flowRateLevel === "Besar" &&
+            temperatureLevel === "Kecil"
+          ) {
+            leakage = "Kecil";
+            percentage = 20;
+          } else if (
+            pressureLevel === "Kecil" &&
+            flowRateLevel === "Besar" &&
+            temperatureLevel === "Sedang"
+          ) {
+            leakage = "Kecil";
+            percentage = 25;
+          } else if (
+            pressureLevel === "Kecil" &&
+            flowRateLevel === "Besar" &&
+            temperatureLevel === "Besar"
+          ) {
+            leakage = "Sedang";
+            percentage = 40;
+          } else if (
+            pressureLevel === "Sedang" &&
+            flowRateLevel === "Kecil" &&
+            temperatureLevel === "Kecil"
+          ) {
+            leakage = "Kecil";
+            percentage = 15;
+          } else if (
+            pressureLevel === "Sedang" &&
+            flowRateLevel === "Kecil" &&
+            temperatureLevel === "Sedang"
+          ) {
+            leakage = "Sedang";
+            percentage = 30;
+          } else if (
+            pressureLevel === "Sedang" &&
+            flowRateLevel === "Kecil" &&
+            temperatureLevel === "Besar"
+          ) {
+            leakage = "Sedang";
+            percentage = 50;
+          } else if (
+            pressureLevel === "Sedang" &&
+            flowRateLevel === "Sedang" &&
+            temperatureLevel === "Kecil"
+          ) {
+            leakage = "Sedang";
+            percentage = 35;
+          } else if (
+            pressureLevel === "Sedang" &&
+            flowRateLevel === "Sedang" &&
+            temperatureLevel === "Sedang"
+          ) {
+            leakage = "Sedang";
+            percentage = 50;
+          } else if (
+            pressureLevel === "Sedang" &&
+            flowRateLevel === "Sedang" &&
+            temperatureLevel === "Besar"
+          ) {
+            leakage = "Besar";
+            percentage = 70;
+          } else if (
+            pressureLevel === "Sedang" &&
+            flowRateLevel === "Besar" &&
+            temperatureLevel === "Kecil"
+          ) {
+            leakage = "Sedang";
+            percentage = 55;
+          } else if (
+            pressureLevel === "Sedang" &&
+            flowRateLevel === "Besar" &&
+            temperatureLevel === "Sedang"
+          ) {
+            leakage = "Besar";
+            percentage = 75;
+          } else if (
+            pressureLevel === "Sedang" &&
+            flowRateLevel === "Besar" &&
+            temperatureLevel === "Besar"
+          ) {
+            leakage = "Besar";
+            percentage = 85;
+          } else if (
+            pressureLevel === "Besar" &&
+            flowRateLevel === "Kecil" &&
+            temperatureLevel === "Kecil"
+          ) {
+            leakage = "Sedang";
+            percentage = 40;
+          } else if (
+            pressureLevel === "Besar" &&
+            flowRateLevel === "Kecil" &&
+            temperatureLevel === "Sedang"
+          ) {
+            leakage = "Besar";
+            percentage = 60;
+          } else if (
+            pressureLevel === "Besar" &&
+            flowRateLevel === "Kecil" &&
+            temperatureLevel === "Besar"
+          ) {
+            leakage = "Besar";
+            percentage = 70;
+          } else if (
+            pressureLevel === "Besar" &&
+            flowRateLevel === "Sedang" &&
+            temperatureLevel === "Kecil"
+          ) {
+            leakage = "Besar";
+            percentage = 65;
+          } else if (
+            pressureLevel === "Besar" &&
+            flowRateLevel === "Sedang" &&
+            temperatureLevel === "Sedang"
+          ) {
+            leakage = "Besar";
+            percentage = 80;
+          } else if (
+            pressureLevel === "Besar" &&
+            flowRateLevel === "Sedang" &&
+            temperatureLevel === "Besar"
+          ) {
+            leakage = "Besar";
+            percentage = 90;
+          } else if (
+            pressureLevel === "Besar" &&
+            flowRateLevel === "Besar" &&
+            temperatureLevel === "Kecil"
+          ) {
+            leakage = "Besar";
+            percentage = 85;
+          } else if (
+            pressureLevel === "Besar" &&
+            flowRateLevel === "Besar" &&
+            temperatureLevel === "Sedang"
+          ) {
+            leakage = "Besar";
+            percentage = 95;
+          } else if (
+            pressureLevel === "Besar" &&
+            flowRateLevel === "Besar" &&
+            temperatureLevel === "Besar"
+          ) {
+            leakage = "Besar";
+            percentage = 100;
+          }
+
+          document.getElementById(
+            "result"
+          ).textContent = `Tingkat Kebocoran: ${leakage} (${percentage}%)`;
+        });
+    </script>
+  </body>
+</html>
